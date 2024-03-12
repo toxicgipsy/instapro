@@ -1,7 +1,7 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage, getToken, renderApp } from "../index.js";
-import { removeLike, setLike } from "../api.js";
+import { posts, goToPage, getToken, renderApp, setPosts } from "../index.js";
+import { clickLike } from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
   // Рендер постов из api
@@ -12,8 +12,7 @@ export function renderPostsPageComponent({ appEl }) {
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
 
-  const postHtml = posts
-    .map((post) => {
+  const postHtml = posts.map((post, index) => {
       return `
         <div class="page-container">
           <div class="header-container"></div>
@@ -31,7 +30,7 @@ export function renderPostsPageComponent({ appEl }) {
               <img src=${post.isLiked ? './assets/images/like-active.svg' : './assets/images/like-not-active.svg'}>
                 </button>
                 <p class="post-likes-text">
-                  Нравится: ${post.usersLikes.length > 0 ? `${post.usersLikes[post.usersLikes.length - 1].name} ${post.usersLikes.length - 1 > 0 ? 'и ещё' + (post.usersLikes.length - 1) : ''} ` : '0'}
+                  Нравится: ${post.likes.length > 0 ? `${post.likes[post.likes.length - 1].name} ${post.likes.length - 1 > 0 ? 'и ещё' + (post.likes.length - 1) : ''} ` : '0'}
                 </p>
               </div>
               <p class="post-text">
@@ -57,35 +56,29 @@ export function renderPostsPageComponent({ appEl }) {
         userId: userEl.dataset.userId,
       });
     });
-    // likeEventListiner();
   }
 
-  // // Поставить лайк
-  // const likeEventListiner = () => {
-  //   const likeButtons = document.querySelectorAll(".like-button");
+  likeEventListiner();
 
-  //   for (const likeButton of likeButtons) {
-  //     likeButton.addEventListener("click", (event) => {
-  //       event.stopPropagation();
-  //       const postId = likeButton.dataset.postId;
-  //       const index = likeButton.dataset.index;
+  // Поставить лайк
+  function likeEventListiner() {
+    const likeButtons = document.querySelectorAll(".like-button");
 
-  //       if (posts[index].isLiked) {
-  //         removeLike({token: getToken(), postId})
-  //         .then((updatedPost) => {
-  //           posts[index].isLiked = false;
-  //           posts[index].likes = updatedPost.post.likes;
-  //           renderApp();
-  //         })
-  //       } else {
-  //         setLike({ token: getToken(), postId })
-  //         .then((updatedPost) => {
-  //           posts[index].isLiked = false;
-  //           posts[index].likes = updatedPost.post.likes;
-  //           renderApp();
-  //         })
-  //       }
-  //     });
-  //   }
-  // };
+    for (const likeButton of likeButtons) {
+      likeButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const postId = likeButton.dataset.postId;
+        const index = likeButton.dataset.index;
+        let like;
+        posts[index].isLiked ? like = "dislike" : like = "like"
+
+        clickLike({ token: getToken(), postId, like })
+        .then((updatedPost) => {
+          posts[index] = updatedPost.post;
+          setPosts(posts);
+          renderPostsPageComponent({ appEl });
+        })
+      });
+    }
+  };
 }

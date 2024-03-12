@@ -9,18 +9,17 @@ export function renderUserPageComponent({ appEl }) {
             <div class="header-container"></div>
 
             <ul class="posts">
-                <div class="posts-user-header">
-                    <img src="${post.user.imageUrl}" class="posts-user-header__user-image"/>
-                    <p class="posts-user-header__user-name">${post.user.name}</p>
-                </div>
-
+            ${ index === 0 ? `<div class="posts-user-header">
+            <img src="${post.user.imageUrl}" class="posts-user-header__user-image"/>
+            <p class="posts-user-header__user-name">${post.user.name}</p>
+            </div>` : "" }
                 <li class="post" data-index=${index}>
                     <div class="post-image-container">
                         <img class="post-image" src="${post.imageUrl}" data-index=${index}/>
                     </div>
                     <div class="post-likes">
                         <button class="like-button" data-post-id="${post.id} data-like=${post.isLiked ? true : ""} data-index=${index}">
-                            <img src= ${post.isLiked ? `./assets/images/like-active.svg>` : `./assets/images/like-not-active.svg>`}
+                            <img src=${post.isLiked ? `./assets/images/like-active.svg>` : `./assets/images/like-not-active.svg>`}
                         </button>
                         <p class="post-likes-text">
                             Нравится: <strong>${post.likes.lenght}</strong>
@@ -52,5 +51,5 @@ export function renderUserPageComponent({ appEl }) {
     });
   }
 
-  goToPage();
+//   goToPage();
 }
