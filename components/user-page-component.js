@@ -51,7 +51,9 @@ export function renderUserPageComponent({ appEl }) {
                       </p>
                     </div>
                     <p class="post-text">
-                        <span class="user-name">${replaceSafe(post.user.name)}</span>
+                        <span class="user-name">${replaceSafe(
+                          post.user.name
+                        )}</span>
                         ${replaceSafe(post.description)}
                     </p>
                     <p class="post-date">${formatDistanceToNow(
@@ -81,5 +83,5 @@ export function renderUserPageComponent({ appEl }) {
     });
   }
 
-  likeEventListiner({ appEl, pageComponent });
+  likeEventListiner({ appEl });
 }
