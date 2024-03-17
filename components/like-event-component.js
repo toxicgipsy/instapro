@@ -1,5 +1,5 @@
 import { renderPostsPageComponent } from "./posts-page-component.js";
-import { posts, getToken, setPosts, page } from "../index.js";
+import { posts, getToken, setPosts } from "../index.js";
 import { clickLike } from "../api.js";
 import { POSTS_PAGE, USER_POSTS_PAGE } from "../routes.js";
 import { renderUserPageComponent } from "./user-page-component.js";
@@ -20,10 +20,11 @@ export function likeEventListiner({ appEl, pageComponent }) {
       clickLike({ token: getToken(), postId, like }).then((updatedPost) => {
         posts[index] = updatedPost.post;
         setPosts(posts);
+
         if (POSTS_PAGE) {
-          renderPostsPageComponent({ appEl, pageComponent });
+          renderPostsPageComponent({ appEl });
         } else if (USER_POSTS_PAGE) {
-          renderUserPageComponent({ appEl, pageComponent });
+          renderUserPageComponent({ appEl });
         }
       });
     });
