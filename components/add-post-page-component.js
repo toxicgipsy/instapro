@@ -4,11 +4,19 @@ import { renderUploadImageComponent } from "./upload-image-component.js";
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
   let imageUrl = "";
 
+  const headerHtml = `
+  <div class="page-container">
+    <div class="header-container"></div>
+    <ul class="posts"></ul>
+  </div>`;
+
+  appEl.innerHTML = headerHtml;
+
+  const postsList = document.querySelector(".posts");
+
   // Страница добавления поста
   const render = () => {
     const appHtml = `
-          <div class="page-container">
-            <div class="header-container"></div>
               <div class="form">
                 <h3 class="form-title">Добавить пост</h3>
                 <div class="form-inputs">
@@ -25,16 +33,9 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
                     <textarea class="input textarea" rows="4" id="description"></textarea>
                   </label>
                   <button class="button" id="add-button">Добавить</button>
-                </div>
-              </div>
-          </div>`;
+                </div>`;
 
-    appEl.innerHTML = appHtml;
-
-    // Рендер хедера
-    renderHeaderComponent({
-      element: document.querySelector(".header-container"),
-    });
+    postsList.innerHTML = appHtml;
 
     // Загрузка фотки
     const uploadImageContainer = appEl.querySelector(".upload-image-container");
@@ -59,5 +60,6 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     });
   };
 
+  renderHeaderComponent();
   render();
 }

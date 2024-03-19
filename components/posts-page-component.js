@@ -1,12 +1,13 @@
+import { replaceSafe } from "../helpers.js";
+import { goToPage, posts } from "../index.js";
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
 import { likeEventListiner } from "./like-event-component.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
 export function renderPostsPageComponent({ appEl }) {
-  // Рендер постов из api
+  // Вывод постов в консоли
   console.log("Актуальный список постов:", posts);
   let pageComponent = true;
 
@@ -15,12 +16,19 @@ export function renderPostsPageComponent({ appEl }) {
    * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
    */
 
+  const headerHtml = `
+              <div class="page-container">
+                <div class="header-container"></div>
+                <ul class="posts"></ul>
+              </div>`;
+
+  appEl.innerHTML = headerHtml;
+
+  const postsList = document.querySelector(".posts");
+
   const postHtml = posts
     .map((post, index) => {
       return `
-        <div class="page-container">
-          <div class="header-container"></div>
-          <ul class="posts">
             <li class="post" data-index=${index}>
               <div class="post-header" data-user-id="${post.user.id}">
                 <img class="post-header__user-image"src="${
@@ -33,15 +41,11 @@ export function renderPostsPageComponent({ appEl }) {
         post.imageUrl
       }" data-index=${index}/>
               </div>
-              <div class="post-likes">
-              <button data-post-id="${post.id}"data-like="${
-        post.isLiked ? "true" : ""
-      }" data-index="${index}" class="like-button">
-              <img src=${
-                post.isLiked
+              <div class="post-likes"><button data-post-id="${post.id}"data-like="${post.isLiked ? "true" : ""}" data-index="${index}" class="like-button">
+                <img src=${post.isLiked
                   ? "./assets/images/like-active.svg"
                   : "./assets/images/like-not-active.svg"
-              }>
+                }>
                 </button>
                 <p class="post-likes-text">
                   Нравится: ${
@@ -56,8 +60,8 @@ export function renderPostsPageComponent({ appEl }) {
                 </p>
               </div>
               <p class="post-text">
-                <span class="user-name">${post.user.name}</span>
-                ${post.description}
+                <span class="user-name">${replaceSafe(post.user.name)}</span>
+                ${replaceSafe(post.description)}
               </p>
               <p class="post-date">${formatDistanceToNow(
                 new Date(post.createdAt),
@@ -65,19 +69,13 @@ export function renderPostsPageComponent({ appEl }) {
                   locale: ru,
                 }
               )}</p>
-            </li>
-          </ul>
-      </div>`;
+            </li>`;
     })
     .join("");
 
-  appEl.innerHTML = postHtml;
+  postsList.innerHTML = postHtml;
 
-  // Рендер хедера
-  renderHeaderComponent({
-    element: document.querySelector(".header-container"),
-  });
-
+  // Обработчик перехода в профиль пользователя
   for (let userEl of document.querySelectorAll(".post-header")) {
     userEl.addEventListener("click", () => {
       goToPage(USER_POSTS_PAGE, {
@@ -87,4 +85,5 @@ export function renderPostsPageComponent({ appEl }) {
   }
 
   likeEventListiner({ appEl, pageComponent });
+  renderHeaderComponent();
 }
