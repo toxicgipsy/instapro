@@ -1,9 +1,10 @@
 import { USER_POSTS_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
-import { posts, goToPage } from "../index.js";
+import { posts, goToPage, getToken, renderApp } from "../index.js";
+import { removeLike, setLike } from "../api.js";
 
 export function renderPostsPageComponent({ appEl }) {
-  // TODO: реализовать рендер постов из api
+  // Рендер постов из api
   console.log("Актуальный список постов:", posts);
 
   /**
@@ -17,23 +18,20 @@ export function renderPostsPageComponent({ appEl }) {
         <div class="page-container">
           <div class="header-container"></div>
           <ul class="posts">
-            <li class="post">
+            <li class="post" data-index=${index}>
               <div class="post-header" data-user-id="${post.user.id}">
-                <img
-                  class="post-header__user-image"
-                  src="${post.user.imageUrl}"
-                />
+                <img class="post-header__user-image"src="${post.user.imageUrl}"/>
                 <p class="post-header__user-name">${post.user.name}</p>
               </div>
               <div class="post-image-container">
-                <img class="post-image" src="${post.imageUrl}" />
+                <img class="post-image" data-post-id="${post.id}" src="${post.imageUrl}" data-index=${index}/>
               </div>
               <div class="post-likes">
-                <button class="like-button" data-post-id="${post.id}">
-                  <img src="./assets/images/like-active.svg" />
+              <button data-post-id="${post.id}"data-like="${post.isLiked ? 'true' : ''}" data-index="${index}" class="like-button">
+              <img src=${post.isLiked ? './assets/images/like-active.svg' : './assets/images/like-not-active.svg'}>
                 </button>
                 <p class="post-likes-text">
-                  Нравится: <strong>${post.likes.lenght}</strong>
+                  Нравится: ${post.usersLikes.length > 0 ? `${post.usersLikes[post.usersLikes.length - 1].name} ${post.usersLikes.length - 1 > 0 ? 'и ещё' + (post.usersLikes.length - 1) : ''} ` : '0'}
                 </p>
               </div>
               <p class="post-text">
@@ -44,11 +42,11 @@ export function renderPostsPageComponent({ appEl }) {
             </li>
           </ul>
       </div>`;
-    })
-    .join("");
+    }).join("");
 
   appEl.innerHTML = postHtml;
 
+  // Рендер хедера
   renderHeaderComponent({
     element: document.querySelector(".header-container"),
   });
@@ -59,5 +57,35 @@ export function renderPostsPageComponent({ appEl }) {
         userId: userEl.dataset.userId,
       });
     });
+    // likeEventListiner();
   }
+
+  // // Поставить лайк
+  // const likeEventListiner = () => {
+  //   const likeButtons = document.querySelectorAll(".like-button");
+
+  //   for (const likeButton of likeButtons) {
+  //     likeButton.addEventListener("click", (event) => {
+  //       event.stopPropagation();
+  //       const postId = likeButton.dataset.postId;
+  //       const index = likeButton.dataset.index;
+
+  //       if (posts[index].isLiked) {
+  //         removeLike({token: getToken(), postId})
+  //         .then((updatedPost) => {
+  //           posts[index].isLiked = false;
+  //           posts[index].likes = updatedPost.post.likes;
+  //           renderApp();
+  //         })
+  //       } else {
+  //         setLike({ token: getToken(), postId })
+  //         .then((updatedPost) => {
+  //           posts[index].isLiked = false;
+  //           posts[index].likes = updatedPost.post.likes;
+  //           renderApp();
+  //         })
+  //       }
+  //     });
+  //   }
+  // };
 }

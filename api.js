@@ -16,7 +16,24 @@ export function getPosts({ token }) {
       if (response.status === 401) {
         throw new Error("Нет авторизации");
       }
+      return response.json();
+    })
+    .then((data) => {
+      return data.posts;
+    });
+}
 
+export function getUserPosts({ token, userId }) {
+  return fetch(`${postsHost}/user-posts/${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
       return response.json();
     })
     .then((data) => {
@@ -87,6 +104,36 @@ export function addPost({ token, description, imageUrl }) {
   }).then((response) => {
     if (response.status === 400) {
       throw new Error("Неверный логин или пароль");
+    }
+    return response.json();
+  });
+}
+
+export function setLike({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Только авторизованный пользователь может поставить лайк");
+      throw new Error("Ты неавторизован");
+    }
+    return response.json();
+  });
+}
+
+export function removeLike({ token, postId }) {
+  return fetch(`${postsHost}/${postId}/dislike`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    if (response.status === 401) {
+      alert("Для этого нужно авторизоваться ;)");
+      throw new Error("Ты неавторизован");
     }
     return response.json();
   });
