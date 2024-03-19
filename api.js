@@ -109,8 +109,8 @@ export function addPost({ token, description, imageUrl }) {
   });
 }
 
-export function setLike({ token, postId }) {
-  return fetch(`${postsHost}/${postId}/like`, {
+export function clickLike({ token, postId, like }) {
+  return fetch(`${postsHost}/${postId}/${like}`, {
     method: "POST",
     headers: {
       Authorization: token,
@@ -122,19 +122,4 @@ export function setLike({ token, postId }) {
     }
     return response.json();
   });
-}
-
-export function removeLike({ token, postId }) {
-  return fetch(`${postsHost}/${postId}/dislike`, {
-    method: "POST",
-    headers: {
-      Authorization: token,
-    },
-  }).then((response) => {
-    if (response.status === 401) {
-      alert("Для этого нужно авторизоваться ;)");
-      throw new Error("Ты неавторизован");
-    }
-    return response.json();
-  });
-}
+} 

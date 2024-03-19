@@ -22,7 +22,7 @@ export let page = null;
 export let posts = [];
 export const setPosts = (newPosts) => {
   posts = newPosts;
-}
+};
 
 export const getToken = () => {
   const token = user ? `Bearer ${user.token}` : undefined;
@@ -74,7 +74,7 @@ export const goToPage = (newPage, data) => {
     if (newPage === USER_POSTS_PAGE) {
       const userId = data.userId;
 
-      return getUserPosts({ token: getToken(), userId})
+      return getUserPosts({ token: getToken(), userId })
         .then((newPosts) => {
           page = USER_POSTS_PAGE;
           posts = newPosts;
