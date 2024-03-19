@@ -56,7 +56,6 @@ export const goToPage = (newPage, data) => {
 
     if (newPage === POSTS_PAGE) {
       page = LOADING_PAGE;
-      renderApp();
 
       return getPosts({ token: getToken() })
         .then((newPosts) => {
@@ -66,7 +65,7 @@ export const goToPage = (newPage, data) => {
         })
         .catch((error) => {
           console.error(error);
-          goToPage(POSTS_PAGE);
+          // goToPage(POSTS_PAGE);
         });
     }
 
@@ -97,6 +96,7 @@ export const goToPage = (newPage, data) => {
 
 export const renderApp = () => {
   const appEl = document.getElementById("app");
+
   if (page === LOADING_PAGE) {
     return renderLoadingPageComponent({
       appEl,
@@ -140,7 +140,7 @@ export const renderApp = () => {
     });
   }
 
-  // Страница фотографию пользвателя
+  // Страница пользвателя
   if (page === USER_POSTS_PAGE) {
     return renderUserPageComponent({
       appEl,
