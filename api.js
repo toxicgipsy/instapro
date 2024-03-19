@@ -68,3 +68,7 @@ export function uploadImage({ file }) {
     return response.json();
   });
 }
+
+export function getPostsFromUsers() {
+  return fetch();
+}
